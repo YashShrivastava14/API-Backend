@@ -10,7 +10,7 @@ class UserController {
       const { name, email, password } = req.body;
 
       const existingUser = await User.findOne({ email });
-      console.log(existingUser);
+      // console.log(existingUser); 
 
       if (existingUser) {
         return res.status(400).json({ message: "Email already exists" });
@@ -38,12 +38,12 @@ class UserController {
 
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: "Invalid email" });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: "Invalid password" });
       }
 
       const token = jwt.sign(
@@ -65,6 +65,7 @@ class UserController {
         name: user.name,
         email: user.email, token
       });
+
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
     }
